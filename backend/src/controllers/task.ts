@@ -90,3 +90,40 @@ export const removeTask: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+// Define a custom type for the request body so we can have static typing
+// for the fields
+type UpdateTaskBody = {
+  _id: string;
+  title: string;
+  description?: string;
+  isChecked: boolean;
+  dateCreated: Date;
+};
+
+export const updateTask: RequestHandler = async (req, res, next) => {
+  // extract any errors that were found by the validator
+  const errors = validationResult(req);
+  const { _id, title, description, isChecked, dateCreated } = req.body as UpdateTaskBody;
+  const { id } = req.params;
+  try {
+    // if there are errors, then this function throws an exception
+    validationErrorParser(errors);
+    if (id !== _id) {
+      res.status(400);
+    } else {
+      const task = await TaskModel.findByIdAndUpdate(
+        id,
+        { $set: { title, description, isChecked, dateCreated } },
+        { new: true },
+      );
+
+      if (task === null) {
+        throw createHttpError(404, "Task not found.");
+      }
+      res.status(200).json(task);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
