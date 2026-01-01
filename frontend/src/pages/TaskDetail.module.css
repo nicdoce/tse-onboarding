@@ -1,0 +1,55 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  padding-bottom: 48px;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.taskTitle {
+  font: var(--font-heading);
+}
+
+.titleContainer {
+  height: 100%;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  overflow: hidden;
+}
+
+.titleContainer span {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button {
+  justify-self: flex-end;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.item {
+  font: var(--font-label);
+}
+
+.taskDescription {
+  font: var(--font-body);
+  white-space: normal;
+}
