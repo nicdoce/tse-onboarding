@@ -1,0 +1,25 @@
+.tagContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 200px;
+  height: 100%;
+  align-items: center;
+}
+
+.profilePicture {
+  border-radius: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.textContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.text {
+  margin-top: 0px;
+  width: 200px;
+}

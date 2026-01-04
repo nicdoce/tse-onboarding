@@ -1,0 +1,50 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  padding-bottom: 48px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.taskTitle {
+  font: var(--font-heading);
+  margin-right: auto;
+  align-content: flex-end;
+}
+
+.button {
+  justify-self: flex-end;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+}
+
+.item {
+  font: var(--font-label);
+  margin-top: 0px;
+}
+
+.taskDescription {
+  font: var(--font-body);
+  white-space: normal;
+  margin-top: 0px;
+}
+
+.taskText {
+  font: var(--font-body);
+  white-space: normal;
+  margin-top: 0px;
+}

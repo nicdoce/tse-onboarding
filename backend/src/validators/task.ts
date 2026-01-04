@@ -37,13 +37,17 @@ const makeDateCreatedValidator = () =>
   body("dateCreated").isISO8601().withMessage("dateCreated must be a valid date-time string");
 // assignee is for Part 2.1
 const makeAssigneeValidator = () =>
-  body("assignee").optional().isMongoId().withMessage("assignee must be a MongoDB object ID");
+  body("assignee")
+    .optional({ checkFalsy: true })
+    .isMongoId()
+    .withMessage("assignee must be a MongoDB object ID");
 
 // establishes a set of rules that the body of the task creation route must follow
 export const createTask = [
   makeTitleValidator(),
   makeDescriptionValidator(),
   makeIsCheckedValidator(),
+  makeAssigneeValidator(),
 ];
 
 export const updateTask = [

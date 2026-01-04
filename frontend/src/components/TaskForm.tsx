@@ -1,6 +1,6 @@
 import { Dialog } from "@tritonse/tse-constellation";
 import { useState } from "react";
-import { createTask } from "src/api/tasks";
+import { createTask, updateTask } from "src/api/tasks";
 import { Button, TextField } from "src/components";
 import styles from "src/components/TaskForm.module.css";
 
@@ -41,6 +41,7 @@ type TaskFormErrors = {
 export function TaskForm({ mode, task, onSubmit }: TaskFormProps) {
   const [title, setTitle] = useState<string>(task?.title || "");
   const [description, setDescription] = useState<string>(task?.description || "");
+  const [assigneeId, setAssigneeId] = useState<string>(task?.assignee?._id || "");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<TaskFormErrors>({});
 
@@ -57,28 +58,49 @@ export function TaskForm({ mode, task, onSubmit }: TaskFormProps) {
       return;
     }
     setLoading(true);
-    createTask({ title, description })
-      .then((result) => {
-        if (result.success) {
-          // clear the form
-          setTitle("");
-          setDescription("");
-          // only call onSubmit if it's NOT undefined
-          if (onSubmit) onSubmit(result.data);
-        } else {
-          // You should always clearly inform the user when something goes wrong.
-          // In this case, we're using the Constellation `Dialog` component to show a popup.
-          // For errors, you generally want to show some kind of error state or notification
-          // within your UI. If the problem is with the user's input, then use
-          // the error states of your smaller components (like the `TextField`s).
-          // If the problem is something we don't really control, such as network
-          // issues or an unexpected exception on the server side, then use a
-          // banner, modal, popup, or similar.
-          setErrorModalMessage(result.error);
-        }
-        setLoading(false);
+    if (mode === "create") {
+      createTask({ title, description, assignee: assigneeId })
+        .then((result) => {
+          if (result.success) {
+            // clear the form
+            setTitle("");
+            setDescription("");
+            setAssigneeId("");
+            // only call onSubmit if it's NOT undefined
+            if (onSubmit) onSubmit(result.data);
+          } else {
+            // You should always clearly inform the user when something goes wrong.
+            // In this case, we're using the Constellation `Dialog` component to show a popup.
+            // For errors, you generally want to show some kind of error state or notification
+            // within your UI. If the problem is with the user's input, then use
+            // the error states of your smaller components (like the `TextField`s).
+            // If the problem is something we don't really control, such as network
+            // issues or an unexpected exception on the server side, then use a
+            // banner, modal, popup, or similar.
+            setErrorModalMessage(result.error);
+          }
+          setLoading(false);
+        })
+        .catch(setErrorModalMessage);
+    } else if (task) {
+      updateTask({
+        _id: task._id,
+        title,
+        description,
+        isChecked: task.isChecked,
+        dateCreated: task.dateCreated,
+        assignee: assigneeId,
       })
-      .catch(setErrorModalMessage);
+        .then((result) => {
+          if (result.success) {
+            if (onSubmit) onSubmit(result.data);
+          } else {
+            setErrorModalMessage(result.error);
+          }
+          setLoading(false);
+        })
+        .catch(setErrorModalMessage);
+    }
   };
 
   const formTitle = mode === "create" ? "New task" : "Edit task";
@@ -107,6 +129,15 @@ export function TaskForm({ mode, task, onSubmit }: TaskFormProps) {
           label="Description (optional)"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
+        />
+      </div>
+      <div className={styles.formRow}>
+        <TextField
+          className={styles.textField}
+          data-testid="task-assigneeId-input"
+          label="Assignee ID (optional)"
+          value={assigneeId}
+          onChange={(event) => setAssigneeId(event.target.value)}
         />
         {/* set `type="primary"` on the button so the browser doesn't try to
         handle it specially (because it's inside a `<form>`) */}
