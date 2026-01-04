@@ -35,7 +35,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
     const user = await UserModel.findById(id);
 
     if (user === null) {
-      throw createHttpError(404, "Task not found.");
+      throw createHttpError(404, "User not found.");
     }
 
     res.status(200).json(user);

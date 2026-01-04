@@ -83,6 +83,9 @@ export type UpdateTaskRequest = {
  */
 export async function createTask(task: CreateTaskRequest): Promise<APIResult<Task>> {
   try {
+    if (task.assignee?.length === 0) {
+      task.assignee = undefined;
+    }
     const response = await post("/api/task", task);
     const json = (await response.json()) as TaskJSON;
     return { success: true, data: parseTask(json) };
@@ -114,6 +117,9 @@ export async function getAllTasks(): Promise<APIResult<Task[]>> {
 
 export async function updateTask(task: UpdateTaskRequest): Promise<APIResult<Task>> {
   try {
+    if (task.assignee?.length === 0) {
+      task.assignee = undefined;
+    }
     const response = await put(`/api/task/${task._id}`, task);
     const json = (await response.json()) as TaskJSON;
     return { success: true, data: parseTask(json) };

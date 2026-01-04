@@ -117,16 +117,29 @@ export const updateTask: RequestHandler = async (req, res, next) => {
     if (id !== _id) {
       res.status(400);
     } else {
-      const task = await TaskModel.findByIdAndUpdate(
-        id,
-        { $set: { title, description, isChecked, dateCreated, assignee } },
-        { new: true },
-      ).populate("assignee");
+      if (assignee) {
+        const task = await TaskModel.findByIdAndUpdate(
+          id,
+          { $set: { title, description, isChecked, dateCreated, assignee } },
+          { new: true },
+        ).populate("assignee");
 
-      if (task === null) {
-        throw createHttpError(404, "Task not found.");
+        if (task === null) {
+          throw createHttpError(404, "Task not found.");
+        }
+        res.status(200).json(task);
+      } else {
+        const task = await TaskModel.findByIdAndUpdate(
+          id,
+          { $set: { title, description, isChecked, dateCreated, assignee: null } },
+          { new: true },
+        ).populate("assignee");
+
+        if (task === null) {
+          throw createHttpError(404, "Task not found.");
+        }
+        res.status(200).json(task);
       }
-      res.status(200).json(task);
     }
   } catch (error) {
     next(error);

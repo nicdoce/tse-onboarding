@@ -2,7 +2,7 @@ import { Dialog } from "@tritonse/tse-constellation";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { type Task, updateTask } from "src/api/tasks";
-import { CheckButton } from "src/components";
+import { CheckButton, UserTag } from "src/components";
 import styles from "src/components/TaskItem.module.css";
 
 export type TaskItemProps = {
@@ -34,21 +34,24 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
   return (
     <div className={styles.item}>
       <CheckButton checked={task.isChecked} onPress={handleToggleCheck} disabled={isLoading} />
-      <div className={textContainerClass}>
-        <span className={styles.title}>
-          <Link to={`/task/${task._id}`}>{task.title}</Link>
-        </span>
-        {task.description && <span className={styles.description}>{task.description}</span>}
+      <div className={styles.container}>
+        <div className={textContainerClass}>
+          <span className={styles.title}>
+            <Link to={`/task/${task._id}`}>{task.title}</Link>
+          </span>
+          {task.description && <span className={styles.description}>{task.description}</span>}
+        </div>
+        <UserTag assignee={task.assignee}></UserTag>
+        <Dialog
+          styleVersion="styled"
+          variant="error"
+          title="An error occurred"
+          // Override the text color so it doesn't show white text on a white background
+          content={<p className={styles.errorModalText}>{errorModalMessage}</p>}
+          isOpen={errorModalMessage !== null}
+          onClose={() => setErrorModalMessage(null)}
+        />
       </div>
-      <Dialog
-        styleVersion="styled"
-        variant="error"
-        title="An error occurred"
-        // Override the text color so it doesn't show white text on a white background
-        content={<p className={styles.errorModalText}>{errorModalMessage}</p>}
-        isOpen={errorModalMessage !== null}
-        onClose={() => setErrorModalMessage(null)}
-      />
     </div>
   );
 }
